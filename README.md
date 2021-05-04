@@ -8,7 +8,18 @@ pySortMap is a PyQt5 based Graphic User Interface used in Semiconductor Yield An
 [![PyPI](https://img.shields.io/pypi/pyversions/wafer_map.svg)](https://pypi.python.org/pypi/wafer_map/)
 <!-- [![PyPI](https://img.shields.io/pypi/wheel/wafer_map.svg)](https://pypi.python.org/pypi/wafer_map/) -->
 
-# Sort Map Define 
+# Summary 
+
+pySortMap is a graphical user interface (GUI) visulization tools developed using PyQt5 to 
+
+# Functionality
+
+- Interactive Wafer Sort Map Visualization 
+- Post Fab Inkoff Function 
+- Auto inkoff 
+- Auto Inkoff file and ink off map generation and download 
+- Wafer Stack and Heat Map Analysis 
+
 ## Import Data Type
 Three **.csv files** needs to upload 
 
