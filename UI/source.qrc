@@ -1,0 +1,25 @@
+<RCC>
+  <qresource prefix="mainwindowIcon">
+    <file>icons8_automatic.ico</file>
+    <file>icons8_smartphone.ico</file>
+    <file>icons8_electronics.ico</file>
+    <file>icons8_transistor.ico</file>
+    <file>icons8_circuit.ico</file>
+    <file>icons8_sensor.ico</file>
+    <file>icons8_integrated_circuit.ico</file>
+    <file>icons8_import_csv.ico</file>
+    <file>icons8_add_file.ico</file>
+    <file>icons8_zoom_in.ico</file>
+    <file>icons8_zoom_out.ico</file>
+    <file>icons8_refresh.ico</file>
+    <file>icons8_target.ico</file>
+    <file>icons8_stack.ico</file>
+    <file>icons8_stack_80_ghC_icon.ico</file>
+    <file>icons8_quill_with_ink.ico</file>
+    <file>icons8_rotate.ico</file>
+    <file>icons8_rotate_left.ico</file>
+    <file>icons8_rotate_right.ico</file>
+    <file>icons8-zoom-in.ico</file>
+    <file>icons8-zoom-in.gif</file>
+  </qresource>
+</RCC>
