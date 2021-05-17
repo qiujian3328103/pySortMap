@@ -39,9 +39,11 @@ class ShowWaferItemDialog(QDialog, Ui_Wafer_Dialog):
         self.pushButton_expand_bin_items.clicked.connect(self.binItemExpansion)
         self.pushButton_expand_lot_items.clicked.connect(self.lotItemExpansion)
         self.pushButton_checked_all_items.clicked.connect(self.checkAllBinItems)
+        self.pushButton_close.clicked.connect(self.closeDialog)
         # self.treeWidget_lot.itemClicked.connect(self.clickItemEmitSignal)
         self.treeWidget_lot.itemSelectionChanged.connect(self.selectItemChangeEmitSignal)
-        self.treeWidget_bin.itemSelectionChanged.connect(self.selectItemChangeEmitSignal)
+        self.treeWidget_bin.itemClicked.connect(self.selectItemChangeEmitSignal)
+        # self.treeWidget_bin..connect(self.selectItemChangeEmitSignal)
 
 
     def selectItemChangeEmitSignal(self):
@@ -177,6 +179,7 @@ class ShowWaferItemDialog(QDialog, Ui_Wafer_Dialog):
                     child_item = QTreeWidgetItem(parent_item)
                     child_item.setText(0, "")
                     child_item.setText(1, str(bin_number))
+                    # child_item.setFlags(Qt.NoItemFlags)
                     label_2 = QLabel("")
                     label_2.setWordWrap(True)
                     # label_2.setStyleSheet('''background-color: {}; border: 3px solid {};'''.format(bin_color, bin_color))
@@ -241,6 +244,14 @@ class ShowWaferItemDialog(QDialog, Ui_Wafer_Dialog):
                         child_item.setCheckState(0, Qt.Checked)
                     else:
                         child_item.setCheckState(0, Qt.Unchecked)
+
+
+    def closeDialog(self):
+        """
+        close dialog
+        :return:
+        """
+        self.close()
 
 
 if __name__ == "__main__":

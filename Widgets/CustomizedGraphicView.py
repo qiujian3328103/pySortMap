@@ -25,8 +25,9 @@ class Viewer(QGraphicsView):
         # define the search Bin number
         self.searchNearestN = 1
 
-        self.origin = QPoint()
+        # mouse drag select item to ink off
         self.changeRubberBand = False
+
 
         self._zoom = 0
         self._empty = True
@@ -81,7 +82,7 @@ class Viewer(QGraphicsView):
 
     def wheelEvent(self, event: QWheelEvent):
         """
-        Zoom in or out of the view.
+        Zoom in or out of the view by mouse wheel scroll
         """
         zoomInFactor = 1.1
         zoomOutFactor = 0.9
@@ -106,8 +107,8 @@ class Viewer(QGraphicsView):
 
     def zoomMap(self, factor=1.1):
         """
-        zoomIn the graphicView
-        :param: default factor 1.1
+        zoom in or out  the graphicView
+        :param: default factor zoom in 1.1
         :return:
         """
         scale_tr = QTransform()
@@ -119,10 +120,11 @@ class Viewer(QGraphicsView):
         """
         default clockwise rotate 30 degree
 
-        :param angle:
+        :param angle: default clockwise 30 degree rotate
         :return:
         """
         self.rotate(angle)
+
 
     # def hoverChange(self):
     #     """

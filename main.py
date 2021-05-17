@@ -1,4 +1,4 @@
-__Author__ = """By: Ethan Jian Qiu Email: Jian.Qiu@globalfoundries.com"""
+__Author__ = """By: Ethan Jian Qiu Email: Ethan.qiujian@gmail.com"""
 __Copyright__ = "Copyright (c) 2021 Ethan Jian Qiu"
 __Version__ = "Version 1.0"
 
@@ -10,7 +10,7 @@ from PyQt5.QtCore import Qt
 # from PySide2.QtWidgets import QMainWindow, QApplication
 from UI.MainWindow import Ui_MainWindow
 from Utils import create_wafer_map, convert_data_to_dict, SortMap
-from Dialog import ShowWaferItemDialog
+from Dialog import ShowWaferItemDialog, ShowWaferSettingDialog
 
 class myApp(QMainWindow, Ui_MainWindow):
 
@@ -30,7 +30,6 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.ucs_map = pd.DataFrame()
         self.ucs_info = pd.DataFrame()
 
-
         # Initialize scene and graphicView setting
         self.scene = QGraphicsScene()
         self.scene_text_item = None
@@ -45,6 +44,10 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.graphics_item_dict = {}
         self.scene_text_item = None
 
+        # create the dialog for wafer setting
+        self.wafer_setting_dialog = ShowWaferSettingDialog()
+        self.wafer_setting_dialog.wafer_layout_changed.connect(self.updateWaferLayoutSetting)
+        self.wafer_setting_dialog.wafer_title_changed.connect(self.updateWaferTitleSetting)
         # create the dialog for wafer selection
         self.wafer_select_dialog = ShowWaferItemDialog()
         self.wafer_select_dialog.select_item.connect(self.updateWaferSortMap)
@@ -55,6 +58,7 @@ class myApp(QMainWindow, Ui_MainWindow):
         # self.die_edge_color = QColor(0, 0, 0, 90)
 
         # action button
+        self.action_Map_Setting.triggered.connect(self.showWaferSettingDialog)
         self.action_Lot_Dialog.triggered.connect(self.showWaferSelectDialog)
         self.action_Zoom_In.triggered.connect(lambda : self.graphicsView.zoomMap(factor=1.1))
         self.action_Zoom_Out.triggered.connect(lambda : self.graphicsView.zoomMap(factor=0.9))
@@ -68,6 +72,12 @@ class myApp(QMainWindow, Ui_MainWindow):
 
         self.testLotTableWidget()
 
+    def showWaferSettingDialog(self):
+        """
+        show dialog for wafer layout setting
+        :return:
+        """
+        self.wafer_setting_dialog.show()
 
     def showWaferSelectDialog(self):
         """
@@ -79,6 +89,25 @@ class myApp(QMainWindow, Ui_MainWindow):
         else:
             self.wafer_select_dialog.hide()
 
+    # def updatewaferSortMap
+
+    def updateWaferLayoutSetting(self, layout_props):
+        """
+        update the wafer map based on the Setting Dialog Emit dictionary
+        :param layout_props:
+        :return:
+        """
+        self.sort_map.layout_props = layout_props
+        self.sort_map.create_wafer_map()
+
+    def updateWaferTitleSetting(self, title_props):
+        """
+        update the wafer title based on the setting dialog emit dictionary
+        :param title_props:
+        :return:
+        """
+        self.sort_map.title_props = title_props
+        self.sort_map.update_wafer_title()
 
     def updateWaferSortMap(self, wafer_info):
         """
@@ -87,11 +116,6 @@ class myApp(QMainWindow, Ui_MainWindow):
 
         :return:
         """
-        if self.bin_data.empty:
-            return
-        else:
-            print(wafer_info)
-
         # filter by click info
         if self.bin_data.empty:
             return
