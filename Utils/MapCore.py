@@ -7,26 +7,34 @@ from Widgets import EllipseItem, RectItem, TextItem
 
 class SortMap():
 
-    def __init__(self, ucs_map_df, scene, layout_props=None, title_props=None):
+    def __init__(self, ucs_map_df, scene, layout_props=None, die_props=None, title_props=None):
         """
 
         :param ucs_map_df:
         :param scene:
         :param wafer_info:
-        :param props: properties of the wafer layout and die properties
+        :param props: properties of the wafer substrate and wafer layout
         ":param title_props: properties of the wafer title setting
         """
         super(SortMap, self).__init__()
 
         if layout_props is None:
-            layout_props = {'die_line_type': Qt.SolidLine,
-                            'die_line_color': QColor(255, 255, 255),
-                            'die_line_width': 2,
-                            'die_default_color': Qt.white,
-                            'die_cosmetic': True,
+            layout_props = {
                             'show_pass_die': False,
                             'show_flash_die': False,
-                            'wafer_background_color': QColor(132, 132, 132, 90)}
+                            'die_default_color': Qt.white,
+                            'wafer_background_color': QColor(132, 132, 132, 90)
+            }
+
+
+        if die_props is None:
+            die_props = {
+                            'die_line_type': Qt.SolidLine,
+                            'die_line_color': QColor(255, 255, 255),
+                            'die_line_width': 2,
+                            'die_cosmetic': True
+            }
+
 
         if title_props is None:
             title_props = {
@@ -42,45 +50,26 @@ class SortMap():
         # self.graphicView = self.graphicView
         self.scene = scene
 
+        # define the layout of the wafer
         self.layout_props = layout_props
 
+        # define the wafer title properties
         self.title_props = title_props
 
+        # define the die properties
+        self.die_props = die_props
+
+        # create dictionary to store all die item
         self.graphic_item_dict = {}
 
         # dict to store if title exist or not exist
         self.wafer_title_dict = {"Title_Exist": False, "Title_Item": None}
 
-    def update_wafer_title(self):
-        """
-        create the wafer title
-        :return:
-        """
-
-        if self.title_props['show_wafer_title']:
-            if not self.wafer_title_dict['Title_Exist']:
-                wafer_title_item = TextItem(name="Wafer_Title_Item")
-                self.wafer_title_dict['Title_Exist'] = True
-                self.wafer_title_dict['Title_Item'] = wafer_title_item
-                self.scene.addItem(wafer_title_item)
-            else:
-                wafer_title_item = self.wafer_title_dict["Title_Item"]
-
-            wafer_title_item.setPos(self.title_props['wafer_title_pos_x'], self.title_props['wafer_title_pos_y'])
-            wafer_title_item.setPlainText(self.title_props['wafer_title'])
-            wafer_title_item.resetFontSize(font_size=self.title_props['wafer_title_font'])
-        else:
-            if not self.wafer_title_dict['Title_Exist']:
-                return
-            else:
-                item = self.wafer_title_dict['Title_Item']
-                self.wafer_title_dict['Title_Item'] = None
-                self.scene().removeItem(item)
-                self.wafer_title_dict['Title_Exist'] = False
+        # wafer frame
+        self.wafer_frame = None
 
 
-
-    def create_wafer_map(self):
+    def createWaferSortMap(self):
         """
 
         +------+------+-------------+-------------+------------+-----------|---------- |--------|---------+---------+
@@ -92,12 +81,11 @@ class SortMap():
 
         DIE_X
 
-        :param ucs_map_df:
-        :param graphicView:
+        :param ucs_map_df: ucs map df must contains columns DIE_ORIGIN_X, DIE_ORIGIN_Y, DIE_SIZE_X, DIE_SIZE_Y,
+                            FLASH_X, FLASH_Y, TEST_FLAG
+
         :param scene: graphic scene where put the plot
         :param wafer_info: current only wafer id, can be show count number, lot id, etc
-        :param show_pass_die: determine if need to show the passed dies
-        :param show_flash_die: determine if need to show the flash die
         :param die_props: die properties for plot Rect
         :return:
         """
@@ -117,12 +105,13 @@ class SortMap():
         self.scene.clear()
         # reset the wafer title setting
         self.wafer_title_dict = {"Title_Exist": False, "Title_Item": None}
+        self.wafer_frame = None
         factor = 0.001
 
-        pen = QPen(self.layout_props['die_line_type'])
-        pen.setWidth(self.layout_props['die_line_width'])
-        pen.setColor(self.layout_props['die_line_color'])
-        pen.setCosmetic(self.layout_props['die_cosmetic'])
+        pen = QPen(self.die_props['die_line_type'])
+        pen.setWidth(self.die_props['die_line_width'])
+        pen.setColor(self.die_props['die_line_color'])
+        pen.setCosmetic(self.die_props['die_cosmetic'])
 
 
         for row_index, row in enumerate(data):
@@ -144,14 +133,14 @@ class SortMap():
         # todo: the test map too big and cannot see the wafer layout. Not a best solution so far
 
         if show_pass_die:
-            wafer_frame = EllipseItem(x=-150, y=-150, width=300, height=300, name='Wafer_Item')
+            self.wafer_frame = EllipseItem(x=-150, y=-150, width=300, height=300, name='Wafer_Item')
         else:
-            wafer_frame = EllipseItem(x=-150, y=-150, width=300, height=300,
+            self.wafer_frame = EllipseItem(x=-150, y=-150, width=300, height=300,
                                       bg_color=self.layout_props['wafer_background_color'], name='Wafer_Item')
 
-        self.scene.addItem(wafer_frame)
+        self.scene.addItem(self.wafer_frame)
 
-        self.update_wafer_title()
+        self.updateWaferTitle()
         # scene.addItem
         # text_item = None
 
@@ -229,87 +218,48 @@ class SortMap():
         #     else:
         #         self.graphic_item_dict[item_name].setBrush(Qt.white)
 
+    def updateWaferTitle(self):
+        """
+        create the wafer title
+        :return:
+        """
 
-def create_wafer_map(ucs_map_df, graphicView, scene, wafer_info, show_pass_die=False, die_props=None):
-    """
-    +------+------+-------------+-------------+------------+-----------|----------|-----------|----------+
-    |DIE_X |DIE_Y |DIE_ORIGIN_X |DIE_ORIGIN_Y | DIE_SIZE_X |DIE_SIZE_Y |SORT_DIE_X|SORT_DIE_Y | TEST FLAG|
-    |------+------+-------------+-------------+------------+-----------|----------|-----------|----------+
-    |  -14 |   17 |     -112008 |       66372 |       6223 |      5098 |   0      |    1      |  P       |
-    |  -13 |   12 |     -105785 |       40882 |       6223 |      5098 |   1      |    2      |  T       |
+        if self.title_props['show_wafer_title']:
+            if not self.wafer_title_dict['Title_Exist']:
+                wafer_title_item = TextItem(name="Wafer_Title_Item")
+                self.wafer_title_dict['Title_Exist'] = True
+                self.wafer_title_dict['Title_Item'] = wafer_title_item
+                self.scene.addItem(wafer_title_item)
+            else:
+                wafer_title_item = self.wafer_title_dict["Title_Item"]
 
-    :param ucs_map_df:
-    :param graphicView:
-    :param scene: graphic scene where put the plot
-    :param wafer_info: current only wafer id, can be show count number, lot id, etc
-    :param show_pass_die: determine if need to show the passed dies
-    :param die_props: die properties for plot Rect
-    :return:
-    """
-    if not show_pass_die:
-        ucs_map_df = ucs_map_df[ucs_map_df["TEST_FLAG"] == 'T']
+            wafer_title_item.setPos(self.title_props['wafer_title_pos_x'], self.title_props['wafer_title_pos_y'])
+            wafer_title_item.setPlainText(self.title_props['wafer_title'])
+            wafer_title_item.resetFontSize(font_size=self.title_props['wafer_title_font'])
+        else:
+            if not self.wafer_title_dict['Title_Exist']:
+                return
+            else:
+                item = self.wafer_title_dict['Title_Item']
+                self.wafer_title_dict['Title_Item'] = None
+                self.scene().removeItem(item)
+                self.wafer_title_dict['Title_Exist'] = False
 
-    # convert to numpy data structure
-    data = ucs_map_df.to_numpy()
+    def updateDieProps(self):
+        """
+        update the die props
+        :return:
+        """
+        # if self.grpahic_item_dict exist, setup the properties of the die
+        if self.graphic_item_dict:
+            for item in self.graphic_item_dict.values():
+                pen = QPen(self.die_props['die_line_type'])
+                pen.setWidth(self.die_props['die_line_width'])
+                pen.setColor(self.die_props['die_line_color'])
+                pen.setCosmetic(self.die_props['die_cosmetic'])
+                item.setPen(pen)
 
-    if die_props is None:
-        die_props = {'line_type': Qt.SolidLine,
-                     'line_color': QColor(255, 0, 0, 90),
-                     'line_width': 0,
-                     'is_cosmetic': True}
+    def updateWaferFrameProps(self):
+        if self.wafer_frame is not None:
+            self.wafer_frame.setBrush(self.layout_props['wafer_background_color'])
 
-    scene.clear()
-
-    graphic_item_dict = {}
-    factor = 0.001
-
-    pen = QPen(die_props['line_type'])
-    pen.setWidth(die_props['line_width'])
-    pen.setCosmetic(die_props['is_cosmetic'])
-    pen.setColor(die_props['line_color'])
-
-    for row_index, row in enumerate(data):
-        graphic_item = RectItem(x=row[2] * factor,
-                                y=row[3] * factor,
-                                x_label=row[6],
-                                y_label=row[7],
-                                width=row[4] * factor,
-                                height=row[5] * factor,
-                                color=Qt.red)
-
-        graphic_item.setPen(pen)
-        item_name = str(int(row[6])) + " " + str(int(row[7]))
-
-        tool_tip = '''<h5>Sort_DIE: ({}), ({})
-                    <hr>
-                    Bin Type: <hr>
-                    <hr>
-                    </h5>'''.format(str(int(row[6])), str(int(row[7])))
-        graphic_item.setToolTip(tool_tip)
-        # graphic_item.setFlags(QGraphicsRectItem.ItemIsSelectable)
-        graphic_item.setCacheMode(QGraphicsRectItem.DeviceCoordinateCache)
-        # set the hover signal
-        # graphic_item.log.hovered.connect()
-        # graphic_item.setSelected()
-        scene.addItem(graphic_item)
-        graphic_item_dict.update({item_name: graphic_item})
-
-    # issue for wafer from layout
-    # todo: if Pass Die show in layout, then need to set the wafer frame on top, otherwise,
-    # todo: the test map too big and cannot see the wafer layout. Not a best solution so far
-
-    if show_pass_die:
-        wafer_frame = EllipseItem(x=-150, y=-150, width=300, height=300)
-    else:
-        wafer_frame = EllipseItem(x=-150, y=-150, width=300, height=300, bg_color=QColor(248, 249, 249))
-
-    scene.addItem(wafer_frame)
-
-    # text_item = TextItem(name="titleName")
-    # text_item.setPlainText(wafer_info)
-    # scene.addItem(text_item)
-
-    # scene.addItem
-    text_item = None
-
-    return graphic_item_dict, text_item

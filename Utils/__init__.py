@@ -1,2 +1,2 @@
 from .DataProcess import *
-from .MapCore import create_wafer_map, SortMap
+from .MapCore import SortMap

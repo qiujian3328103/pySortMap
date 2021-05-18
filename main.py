@@ -9,7 +9,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 # from PySide2.QtWidgets import QMainWindow, QApplication
 from UI.MainWindow import Ui_MainWindow
-from Utils import create_wafer_map, convert_data_to_dict, SortMap
+from Utils import convert_data_to_dict, SortMap
 from Dialog import ShowWaferItemDialog, ShowWaferSettingDialog
 
 class myApp(QMainWindow, Ui_MainWindow):
@@ -48,6 +48,8 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.wafer_setting_dialog = ShowWaferSettingDialog()
         self.wafer_setting_dialog.wafer_layout_changed.connect(self.updateWaferLayoutSetting)
         self.wafer_setting_dialog.wafer_title_changed.connect(self.updateWaferTitleSetting)
+        self.wafer_setting_dialog.die_props_changed.connect(self.updateDieSetting)
+
         # create the dialog for wafer selection
         self.wafer_select_dialog = ShowWaferItemDialog()
         self.wafer_select_dialog.select_item.connect(self.updateWaferSortMap)
@@ -91,14 +93,24 @@ class myApp(QMainWindow, Ui_MainWindow):
 
     # def updatewaferSortMap
 
-    def updateWaferLayoutSetting(self, layout_props):
+    def updateWaferLayoutSetting(self, setting_props):
         """
         update the wafer map based on the Setting Dialog Emit dictionary
-        :param layout_props:
+        :param setting_props: dictionary with both layout and die
+        {
+            "layout_props": dict,
+            "die_props": dict
+        }
         :return:
         """
-        self.sort_map.layout_props = layout_props
-        self.sort_map.create_wafer_map()
+        self.sort_map.layout_props = setting_props['layout_props']
+        self.sort_map.die_props = setting_props['die_props']
+        self.sort_map.createWaferSortMap()
+        # self.sort_map.updateDieProps()
+
+    def updateDieSetting(self, die_props):
+        self.sort_map.die_props = die_props
+        self.sort_map.updateDieProps()
 
     def updateWaferTitleSetting(self, title_props):
         """
@@ -107,7 +119,7 @@ class myApp(QMainWindow, Ui_MainWindow):
         :return:
         """
         self.sort_map.title_props = title_props
-        self.sort_map.update_wafer_title()
+        self.sort_map.updateWaferTitle()
 
     def updateWaferSortMap(self, wafer_info):
         """
@@ -149,7 +161,7 @@ class myApp(QMainWindow, Ui_MainWindow):
         #                                                                  die_props=die_props)
         self.sort_map.ucs_map_df = df[["DIE_ORIGIN_X","DIE_ORIGIN_Y","DIE_SIZE_X","DIE_SIZE_Y","SORT_DIE_X","SORT_DIE_Y", "FLASH_X", "FLASH_Y", "TEST_FLAG"]]
         # self.sort_map.layout_props = die_props
-        self.sort_map.create_wafer_map()
+        self.sort_map.createWaferSortMap()
 
 
         # print(self.graphics_item_dict)
