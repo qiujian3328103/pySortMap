@@ -103,6 +103,8 @@ class SortMap():
 
         # clear the scene
         self.scene.clear()
+        self.graphic_item_dict = {}
+
         # reset the wafer title setting
         self.wafer_title_dict = {"Title_Exist": False, "Title_Item": None}
         self.wafer_frame = None
@@ -159,14 +161,15 @@ class SortMap():
         if bin_data.empty:
             return
 
-        # key_list = list(self.graphic_item_dict.keys())
+        key_list = list(self.graphic_item_dict.keys())
+        # print(self.graphic_item_dict)
         if not bin_data.empty:
             color_list = bin_data["BIN_COLOR"].tolist()
             # data.loc[:, 'COLOR_DIE'] = ""
             bin_data['COLOR_DIE'] = list(zip(bin_data["DIE_X"], bin_data["DIE_Y"]))
             # die_x_list = data["DIE_X"].tolist()
             # die_y_list = data["DIE_Y"].tolist()
-            key_list = list(self.graphic_item_dict.keys())
+            # key_list = list(self.graphic_item_dict.keys())
             data_list = bin_data["COLOR_DIE"].tolist()
             # cols = ['DIE_X', 'DIE_Y', 'BIN_NUMBER', "BIN_TYPE"]
             X_COORDINATE = bin_data["DIE_X"].tolist()
