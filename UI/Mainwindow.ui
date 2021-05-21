@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>526</width>
+    <height>534</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sort Map 1.0</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="Viewer" name="graphicsView"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>526</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMenu">
+    <property name="title">
+     <string>Menu</string>
+    </property>
+    <addaction name="action_Import_File"/>
+    <addaction name="action_Lot_Dialog"/>
+    <addaction name="action_Ink_Off"/>
+    <addaction name="action_Stack_Map"/>
+    <addaction name="action_Map_Setting"/>
+   </widget>
+   <addaction name="menuMenu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="baseSize">
+    <size>
+     <width>0</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="WindowText">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>33</red>
+         <green>255</green>
+         <blue>6</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="WindowText">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>33</red>
+         <green>255</green>
+         <blue>6</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="WindowText">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>127</red>
+         <green>127</green>
+         <blue>127</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::BottomToolBarArea|Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_Import_File"/>
+   <addaction name="separator"/>
+   <addaction name="action_Zoom_In"/>
+   <addaction name="action_Zoom_Out"/>
+   <addaction name="separator"/>
+   <addaction name="action_Rotation_Left"/>
+   <addaction name="action_Rotation_Right"/>
+   <addaction name="action_Reset"/>
+   <addaction name="separator"/>
+   <addaction name="action_Lot_Dialog"/>
+   <addaction name="action_Ink_Off"/>
+   <addaction name="action_Stack_Map"/>
+   <addaction name="separator"/>
+   <addaction name="action_Map_Setting"/>
+  </widget>
+  <action name="action_Ink_Off">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_quill_with_ink.ico</normaloff>:/mainwindowIcon/icons8_quill_with_ink.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Ink Off</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Ink Off Mode</string>
+   </property>
+  </action>
+  <action name="action_Stack_Map">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_stack.ico</normaloff>:/mainwindowIcon/icons8_stack.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Stack Map</string>
+   </property>
+  </action>
+  <action name="action_Lot_Dialog">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_electronics.ico</normaloff>:/mainwindowIcon/icons8_electronics.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Lot Dialog</string>
+   </property>
+  </action>
+  <action name="action_Map_Setting">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_automatic.ico</normaloff>:/mainwindowIcon/icons8_automatic.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Map Setting</string>
+   </property>
+  </action>
+  <action name="action_Import_File">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_import_csv.ico</normaloff>:/mainwindowIcon/icons8_import_csv.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Import File</string>
+   </property>
+  </action>
+  <action name="action_Zoom_In">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_zoom_in.ico</normaloff>:/mainwindowIcon/icons8_zoom_in.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom_In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom In Map</string>
+   </property>
+  </action>
+  <action name="action_Zoom_Out">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_zoom_out.ico</normaloff>:/mainwindowIcon/icons8_zoom_out.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom_Out</string>
+   </property>
+  </action>
+  <action name="action_Reset">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_refresh.ico</normaloff>:/mainwindowIcon/icons8_refresh.ico</iconset>
+   </property>
+   <property name="text">
+    <string>reset</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset Map</string>
+   </property>
+  </action>
+  <action name="action_Rotation_Left">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_rotate_left.ico</normaloff>:/mainwindowIcon/icons8_rotate_left.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Rotation_Left</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Map Left</string>
+   </property>
+  </action>
+  <action name="action_Rotation_Right">
+   <property name="icon">
+    <iconset resource="source.qrc">
+     <normaloff>:/mainwindowIcon/icons8_rotate_right.ico</normaloff>:/mainwindowIcon/icons8_rotate_right.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Rotation_Right</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Map Right</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Viewer</class>
+   <extends>QGraphicsView</extends>
+   <header>Widgets.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="source.qrc"/>
+ </resources>
+ <connections/>
+</ui>
