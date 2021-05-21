@@ -10,7 +10,8 @@ from PyQt5.QtCore import Qt
 # from PySide2.QtWidgets import QMainWindow, QApplication
 from UI.MainWindow import Ui_MainWindow
 from Utils import convert_data_to_dict, SortMap
-from Dialog import ShowWaferItemDialog, ShowWaferSettingDialog
+from Dialog import ShowWaferItemDialog, ShowWaferSettingDialog, ShowInkDialog
+from Widgets import MessageDialog
 
 class myApp(QMainWindow, Ui_MainWindow):
 
@@ -53,6 +54,9 @@ class myApp(QMainWindow, Ui_MainWindow):
         # create the dialog for wafer selection
         self.wafer_select_dialog = ShowWaferItemDialog()
         self.wafer_select_dialog.select_item.connect(self.updateWaferSortMap)
+
+        # create the ink dialog for wafer ink off process
+        self.wafer_ink_dialog = ShowInkDialog()
         # self.wafer_select_dialog.select_bin.connect(self.updateWaferSortMap)
 
         # initial ink off setting in QGraphic View
@@ -62,13 +66,15 @@ class myApp(QMainWindow, Ui_MainWindow):
         # action button
         self.action_Map_Setting.triggered.connect(self.showWaferSettingDialog)
         self.action_Lot_Dialog.triggered.connect(self.showWaferSelectDialog)
+        self.sort_map = SortMap(ucs_map_df=self.ucs_map, scene=self.scene)
         self.action_Zoom_In.triggered.connect(lambda : self.graphicsView.zoomMap(factor=1.1))
         self.action_Zoom_Out.triggered.connect(lambda : self.graphicsView.zoomMap(factor=0.9))
         self.action_Rotation_Left.triggered.connect(lambda : self.graphicsView.rotateMap(angle=-15))
         self.action_Rotation_Right.triggered.connect(lambda : self.graphicsView.rotateMap(angle=15))
 
+        self.action_Ink_Off.triggered.connect(self.showInkDialog)
+
         # create the sort map class
-        self.sort_map = SortMap(ucs_map_df=self.ucs_map, scene=self.scene)
 
         self.testGraphicPlot()
 
@@ -91,6 +97,11 @@ class myApp(QMainWindow, Ui_MainWindow):
         else:
             self.wafer_select_dialog.hide()
 
+    def showInkDialog(self):
+        if self.action_Ink_Off.isChecked():
+            self.wafer_ink_dialog.show()
+        else:
+            self.wafer_ink_dialog.close()
     # def updatewaferSortMap
 
     def updateWaferLayoutSetting(self, setting_props):
@@ -106,6 +117,8 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.sort_map.layout_props = setting_props['layout_props']
         self.sort_map.die_props = setting_props['die_props']
         self.sort_map.createWaferSortMap()
+        # MessageDialog(u"Map Updated", "success")
+
         # self.sort_map.updateDieProps()
 
     def updateDieSetting(self, die_props):
@@ -193,9 +206,14 @@ class myApp(QMainWindow, Ui_MainWindow):
 if __name__ == "__main__":
     # from UI import StyleSheet
     import os
+    from Style.Style import StyleSheet
+    from qt_material import apply_stylesheet
 
     app = QApplication(sys.argv)
-    # app.setStyleSheet(StyleSheet)
+
+    # apply_stylesheet(app, theme='light_teal.xml')
+
+    app.setStyleSheet(StyleSheet)
     #### use to prevet the keranl dying everytime
     try:
         app.setStyle('Fusion')
