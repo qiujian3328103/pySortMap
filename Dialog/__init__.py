@@ -1,2 +1,3 @@
 from .WaferItemDialog import ShowWaferItemDialog
 from .WaferSettingDialog import ShowWaferSettingDialog
+from .WaferInkDialog import ShowInkDialog
