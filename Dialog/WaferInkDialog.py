@@ -79,6 +79,7 @@ class ShowInkDialog(QDialog, Ui_Ink_Dialog):
             "polygon_ink": self.toolButton_polygon.isChecked(),
             "update_polygon_ink": False,
             "redraw_polygon": False,
+
         })
         self.ink_signal.emit(self.ink_selection)
 
