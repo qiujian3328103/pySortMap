@@ -35,6 +35,8 @@ class ShowWaferItemDialog(QDialog, Ui_Wafer_Dialog):
         # tree Widget Item collapse
         self.item_collapse = False
 
+        self.current_select_item = {}
+
         #
         self.pushButton_expand_bin_items.clicked.connect(self.binItemExpansion)
         self.pushButton_expand_lot_items.clicked.connect(self.lotItemExpansion)
@@ -44,6 +46,7 @@ class ShowWaferItemDialog(QDialog, Ui_Wafer_Dialog):
         self.treeWidget_lot.itemSelectionChanged.connect(self.selectItemChangeEmitSignal)
         self.treeWidget_bin.itemClicked.connect(self.selectItemChangeEmitSignal)
         # self.treeWidget_bin..connect(self.selectItemChangeEmitSignal)
+
 
 
     def selectItemChangeEmitSignal(self):
@@ -74,8 +77,9 @@ class ShowWaferItemDialog(QDialog, Ui_Wafer_Dialog):
                     # convert the bin_number string to int if read as number
                     checked_items_list.append(int(sub_item.text(1)))
 
+        self.current_select_item = {"LOT_ID":[lot_id], "VENDOR_SCRIBE":[wafer_id], "BIN_NUMBER":checked_items_list}
 
-        self.select_item.emit({"LOT_ID":[lot_id], "VENDOR_SCRIBE":[wafer_id], "BIN_NUMBER":checked_items_list})
+        self.select_item.emit(self.current_select_item)
 
 
     def initializeLotTreeWidget(self):

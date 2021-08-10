@@ -1,9 +1,7 @@
-from PyQt5.QtGui import QColor
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QDialog, QApplication, QHeaderView, QTreeWidgetItem, QLabel, QColorDialog
+from PyQt5.QtWidgets import QDialog, QApplication, QColorDialog
 
 from UI import Ui_App_Setting_Dialog
-
 
 
 class ShowWaferSettingDialog(QDialog, Ui_App_Setting_Dialog):
@@ -30,7 +28,7 @@ class ShowWaferSettingDialog(QDialog, Ui_App_Setting_Dialog):
         self.checkBox_die_cosmetic.stateChanged.connect(self.emitWaferLayoutSetting)
         self.comboBox_die_line_style.currentTextChanged.connect(self.emitWaferLayoutSetting)
 
-        self.plainTextEdit_wafer_title_name.textChanged.connect(self.emitWaferTitleSetting)
+        self.lineEdit_plot_title_name.textChanged.connect(self.emitWaferTitleSetting)
         self.spinBox_title_pos_x.valueChanged.connect(self.emitWaferTitleSetting)
         self.spinBox_title_pos_y.valueChanged.connect(self.emitWaferTitleSetting)
         self.spinBox_wafer_title_font.valueChanged.connect(self.emitWaferTitleSetting)

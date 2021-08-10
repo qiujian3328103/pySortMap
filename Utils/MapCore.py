@@ -60,7 +60,7 @@ class SortMap():
         self.die_props = die_props
 
         # create dictionary to store all die item
-        self.graphic_item_dict = {}
+        # self.scene.graphic_item_dict = {}
 
         # dict to store if title exist or not exist
         self.wafer_title_dict = {"Title_Exist": False, "Title_Item": None}
@@ -103,7 +103,7 @@ class SortMap():
 
         # clear the scene
         self.scene.clear()
-        self.graphic_item_dict = {}
+        self.scene.graphics_item_dict = {}
 
         # reset the wafer title setting
         self.wafer_title_dict = {"Title_Exist": False, "Title_Item": None}
@@ -117,7 +117,7 @@ class SortMap():
 
 
         for row_index, row in enumerate(data):
-            graphic_item = RectItem(x=row[0], y=row[1], width=row[2], height=row[3],
+            graphic_item = RectItem(x=row[0], y=row[1], width=row[2], height=row[3], x_label=int(row[4]), y_label=int(row[5]),
                                     color=self.layout_props['die_default_color'], name='Die_Item')
             graphic_item.setPen(pen)
 
@@ -128,7 +128,8 @@ class SortMap():
             graphic_item.setToolTip(tool_tip)
             graphic_item.setCacheMode(QGraphicsRectItem.DeviceCoordinateCache)
             self.scene.addItem(graphic_item)
-            self.graphic_item_dict.update({(row[4], row[5]): graphic_item})
+            # update the graphic item dictionary
+            self.scene.graphics_item_dict.update({(row[4], row[5]): graphic_item})
 
         # issue for wafer from layout
         # todo: if Pass Die show in layout, then need to set the wafer frame on top, otherwise,
@@ -161,7 +162,7 @@ class SortMap():
         if bin_data.empty:
             return
 
-        key_list = list(self.graphic_item_dict.keys())
+        key_list = list(self.scene.graphics_item_dict.keys())
         # print(self.graphic_item_dict)
         if not bin_data.empty:
             color_list = bin_data["BIN_COLOR"].tolist()
@@ -183,19 +184,19 @@ class SortMap():
                     # change color of die
                     # find the index of this coordinate
                     index = data_list.index(item_name)
-                    self.graphic_item_dict[item_name].setBrush(QColor(color_list[index]))
+                    self.scene.graphics_item_dict[item_name].setBrush(QColor(color_list[index]))
                     # assign the color from the callbackRectItem
-                    self.graphic_item_dict[item_name].color = QColor(color_list[index])
+                    self.scene.graphics_item_dict[item_name].color = QColor(color_list[index])
                     # assign the ink flag number to the callbackRectItem
-                    self.graphic_item_dict[item_name].ink_flag = INK_FLAG[index]
+                    self.scene.graphics_item_dict[item_name].ink_flag = INK_FLAG[index]
                     # assign the bin number into the graphic_item
-                    self.graphic_item_dict[item_name].bin_number = BIN_NUMBER[index]
+                    self.scene.graphics_item_dict[item_name].bin_number = BIN_NUMBER[index]
                     tool_tip = '''<h5>SORT_DIE: ({}), ({})<hr>Bin Type: {}<hr>Bin Number: {}</h5>'''.format(
                         str(X_COORDINATE[index]), str(Y_COORDINATE[index]), str(BIN_TYPE[index]),
                         str(BIN_NUMBER[index]))
-                    self.graphic_item_dict[item_name].setToolTip(tool_tip)
+                    self.scene.graphics_item_dict[item_name].setToolTip(tool_tip)
                 else:
-                    self.graphic_item_dict[item_name].setBrush(Qt.white)
+                    self.scene.graphics_item_dict[item_name].setBrush(Qt.white)
 
         # use the filter is slow, use the index way if faster
 
@@ -254,8 +255,8 @@ class SortMap():
         :return:
         """
         # if self.grpahic_item_dict exist, setup the properties of the die
-        if self.graphic_item_dict:
-            for item in self.graphic_item_dict.values():
+        if self.scene.graphics_item_dict:
+            for item in self.scene.graphics_item_dict.values():
                 pen = QPen(self.die_props['die_line_type'])
                 pen.setWidth(self.die_props['die_line_width'])
                 pen.setColor(self.die_props['die_line_color'])

@@ -3,15 +3,15 @@ __Copyright__ = "Copyright (c) 2021 Ethan Jian Qiu"
 __Version__ = "Version 1.0"
 
 import sys
+
 import pandas as pd
-from PyQt5.QtWidgets import QMainWindow, QApplication, QGraphicsScene
-from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt
-# from PySide2.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication
+
+from Dialog import ShowWaferItemDialog, ShowWaferSettingDialog, ShowInkDialog
 from UI.MainWindow import Ui_MainWindow
 from Utils import convert_data_to_dict, SortMap
-from Dialog import ShowWaferItemDialog, ShowWaferSettingDialog, ShowInkDialog
-from Widgets import MessageDialog
+from Widgets import Scene
+
 
 class myApp(QMainWindow, Ui_MainWindow):
 
@@ -32,7 +32,8 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.ucs_info = pd.DataFrame()
 
         # Initialize scene and graphicView setting
-        self.scene = QGraphicsScene()
+        self.scene = Scene()
+        self.scene.graphics_item_dict = {}
         self.scene_text_item = None
         self.graphicsView.setScene(self.scene)
         # self.graphicsView.scale(1.5, 1.5)
@@ -42,7 +43,7 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.graphicsView_save_path = os.path.abspath(".")
 
         # define the graphic item dictionary to store each plot item data
-        self.graphics_item_dict = {}
+        # self.graphics_item_dict = self.scene.graphics_item_dict
         self.scene_text_item = None
 
         # create the dialog for wafer setting
@@ -57,6 +58,9 @@ class myApp(QMainWindow, Ui_MainWindow):
 
         # create the ink dialog for wafer ink off process
         self.wafer_ink_dialog = ShowInkDialog()
+        self.wafer_ink_dialog.close_ink_dialog_signal.connect(self.closeInkDialog)
+        self.wafer_ink_dialog.ink_signal.connect(self.inkProcessActivate)
+
         # self.wafer_select_dialog.select_bin.connect(self.updateWaferSortMap)
 
         # initial ink off setting in QGraphic View
@@ -71,7 +75,8 @@ class myApp(QMainWindow, Ui_MainWindow):
         self.action_Zoom_Out.triggered.connect(lambda : self.graphicsView.zoomMap(factor=0.9))
         self.action_Rotation_Left.triggered.connect(lambda : self.graphicsView.rotateMap(angle=-15))
         self.action_Rotation_Right.triggered.connect(lambda : self.graphicsView.rotateMap(angle=15))
-
+        self.action_Reset.triggered.connect(self.resetWaferSortMap)
+        # self.action_Reset.triggered.connect(self.updateWaferSortMap())
         self.action_Ink_Off.triggered.connect(self.showInkDialog)
 
         # create the sort map class
@@ -85,7 +90,10 @@ class myApp(QMainWindow, Ui_MainWindow):
         show dialog for wafer layout setting
         :return:
         """
-        self.wafer_setting_dialog.show()
+        if self.action_Map_Setting.isChecked():
+            self.wafer_setting_dialog.show()
+        else:
+            self.wafer_setting_dialog.hide()
 
     def showWaferSelectDialog(self):
         """
@@ -100,8 +108,11 @@ class myApp(QMainWindow, Ui_MainWindow):
     def showInkDialog(self):
         if self.action_Ink_Off.isChecked():
             self.wafer_ink_dialog.show()
+            # inital the ink off setting
+            self.inkProcessActivate(ink_setting=self.wafer_ink_dialog.ink_selection)
         else:
-            self.wafer_ink_dialog.close()
+            self.wafer_ink_dialog.hide()
+
     # def updatewaferSortMap
 
     def updateWaferLayoutSetting(self, setting_props):
@@ -145,9 +156,82 @@ class myApp(QMainWindow, Ui_MainWindow):
         if self.bin_data.empty:
             return
         else:
+            # plot current wafer sort map based on the select wafer and lot id
             self.current_wafer_df = self.bin_data[self.bin_data['LOT_ID'].isin(wafer_info['LOT_ID']) & self.bin_data['VENDOR_SCRIBE'].isin(wafer_info['VENDOR_SCRIBE']) & self.bin_data['BIN_NUMBER'].isin(wafer_info['BIN_NUMBER'])]
             self.sort_map.updateWaferMap(bin_data=self.current_wafer_df)
 
+    def resetWaferSortMap(self):
+        """
+        click reset the action button to reset the plot based on current selected lot and wafer info in the
+        showWaferSelectDialog()
+        :return:
+        """
+        current_select_wafer_info = self.wafer_select_dialog.current_select_item
+        if current_select_wafer_info:
+            self.updateWaferSortMap(wafer_info=current_select_wafer_info)
+        else:
+            self.showProgramStatus(text="No Wafer Select", style="success")
+            return
+
+    def inkProcessActivate(self, ink_setting):
+        """
+        receive the signal from the ink dialog
+        :param ink_setting: dictionary
+        :return:
+        """
+        if ink_setting['window_close']:
+            self.action_Ink_Off.setChecked(False)
+            return
+
+
+        self.graphicsView._is_ink_mode_on = True
+        self.graphicsView._is_polygon_mode_on = ink_setting['polygon_ink']
+        self.graphicsView._is_rubberBand_mode_on = ink_setting['drag_ink']
+        self.graphicsView._is_click_mode = ink_setting['click_die_ink']
+        self.graphicsView.setInteractive(ink_setting['click_die_ink'])
+        self.graphicsView.searchNearestN = ink_setting['nearest_die_number']
+        self.graphicsView.ink_shape = ink_setting['ink_shape']
+
+        if ink_setting['update_polygon_ink'] and self.graphicsView.scene().polygon_selector_exist:
+            # for polygon ink mode and poly exist update the polygon setting
+            self.graphicsView.updatePolygonSelectorSetting(polygon_props=ink_setting['polygon_props'])
+
+        if ink_setting['redraw_polygon'] and self.graphicsView.scene().polygon_selector_exist:
+            # redraw the polygon selector if number of polygon points or double click color changed
+            # remote the exist polygon
+            self.graphicsView.removePolygonSelector()
+            # recreate the polygon selector
+            self.graphicsView.createPolygonSelector(polygon_props=ink_setting['polygon_props'])
+
+        # if polygon ink select add the poly select
+        print(self.graphicsView._is_polygon_mode_on)
+        # if self.graphicsView._is_polygon_mode_on:
+        self.graphicsView.createPolygonSelector(polygon_props=ink_setting['polygon_props'])
+
+
+    def closeInkDialog(self, dialog_closed):
+        """
+        signal close dialog and reset the ink action Button
+        :return:
+        """
+        self.action_Ink_Off.setChecked(False)
+
+    def showProgramStatus(self, text, style="success"):
+        """
+        show the program status under the bottom of the MainWindow
+        :param text: info on the status bar
+        :param style: status bar style
+        :return:
+        """
+        if style == "success":
+            _css_style = "QStatusBar{color:#E74C3C;}"
+        elif style == "warning":
+            _css_style = "QStatusBar{color:#008000;}"
+        else:
+            _css_style = "QStatusBar{color:#008000;}"
+
+        self.statusBar().showMessage("{}".format(text))
+        self.statusBar().setStyleSheet("{}".format(_css_style))
 
     def testGraphicPlot(self):
         # todo: create a funtion to detect if data column names contians the names required
@@ -179,7 +263,6 @@ class myApp(QMainWindow, Ui_MainWindow):
 
         # print(self.graphics_item_dict)
 
-
     def testLotTableWidget(self):
         # todo: create function to detect if import data contians the columns name
         df = pd.read_csv(r"/Users/JianQiu/Dropbox/pythonprojects/SortMap/SampleData/bin_data.csv")
@@ -207,7 +290,6 @@ if __name__ == "__main__":
     # from UI import StyleSheet
     import os
     from Style.Style import StyleSheet
-    from qt_material import apply_stylesheet
 
     app = QApplication(sys.argv)
 

@@ -23,6 +23,9 @@
     <file>icons8-zoom-in.gif</file>
   </qresource>
   <qresource prefix="inkoffIcon">
+    <file>Cross.png</file>
+    <file>Corner.png</file>
+    <file>Around.png</file>
     <file>icons8_rectangular_4.ico</file>
     <file>icons8_select_96.ico</file>
     <file>icons8_rectangle_96.ico</file>

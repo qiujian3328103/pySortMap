@@ -1,9 +1,9 @@
 from PyQt5.QtCore import QRectF, Qt, pyqtSignal, QObject
-from PyQt5.QtGui import QBrush, QColor, QPen, QCursor, QPolygonF, QPainterPath
+from PyQt5.QtGui import QBrush, QPen, QCursor, QPolygonF, QPainterPath
 from PyQt5.QtWidgets import (QGraphicsItem, QGraphicsPolygonItem, QGraphicsPathItem)
 
 
-class PolygonAction(QObject):
+class PolygonSelector(QObject):
     """
     class signal for polygon action
     """
@@ -11,11 +11,11 @@ class PolygonAction(QObject):
 
 
 class PolygonAnnotation(QGraphicsPolygonItem):
-    def __init__(self, parent=None, polygon_props=None):
+    def __init__(self, polygon_props, parent=None):
         super(PolygonAnnotation, self).__init__(parent)
-        # set the polygon_setting
-        if polygon_props is None:
-            polygon_props={
+        """
+        polygon selector setting
+            polygon_props = {
                 "polygon_color": QColor("green"),
                 "polygon_radius": 50,
                 "polygon_width": 2,
@@ -30,11 +30,13 @@ class PolygonAnnotation(QGraphicsPolygonItem):
                 "grip_hover_color": QColor(255, 255, 0),
             }
 
+        """
+
         self.polygon_props = polygon_props
         self.name = "polygon_selector"
 
         # polygon ink action signal
-        self.polygon_signal = PolygonAction()
+        self.polygon_signal = PolygonSelector()
 
         self.m_points = []
         # self.setZValue(10)
@@ -66,6 +68,19 @@ class PolygonAnnotation(QGraphicsPolygonItem):
         self.m_items.append(item)
         item.setPos(p)
 
+    def updatePolygonItemProperties(self, polygon_props):
+        """
+        update the GripItem Setting
+        :return:
+        """
+        # set the edge line properties
+        self.setPen(QPen(polygon_props["polygon_color"], polygon_props["polygon_width"]))
+        # set each grip point properties
+        for item in self.m_items:
+            item.setBrush(polygon_props["grip_ellipse_color"])
+            item.setPen(QPen(polygon_props["grip_ellipse_color"], self.polygon_props["grip_ellipse_width"]))
+
+
     def movePoint(self, i, p):
         if 0 <= i < len(self.m_points):
             self.m_points[i] = self.mapFromScene(p)
@@ -90,6 +105,7 @@ class PolygonAnnotation(QGraphicsPolygonItem):
 
     def hoverEnterEvent(self, event):
         self.setBrush(self.polygon_props["polygon_hover_color"])
+        self.setOpacity(0.5)
         super(PolygonAnnotation, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
@@ -156,7 +172,7 @@ class GripItem(QGraphicsPathItem):
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setAcceptHoverEvents(True)
-        self.setZValue(11)
+        self.setZValue(100)
         self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def hoverEnterEvent(self, event):

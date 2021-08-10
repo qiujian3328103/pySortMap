@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>322</width>
-    <height>659</height>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Display Setting Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
@@ -277,14 +277,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit_wafer_title_name">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>100</height>
-           </size>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lineEdit_plot_title_name"/>
         </item>
        </layout>
       </item>
@@ -415,7 +408,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="lineEdit_save_path"/>
         </item>
        </layout>
       </item>

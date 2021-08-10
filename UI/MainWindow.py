@@ -55,6 +55,7 @@ class Ui_MainWindow(object):
         self.action_Ink_Off.setIcon(icon)
         self.action_Ink_Off.setObjectName("action_Ink_Off")
         self.action_Stack_Map = QtWidgets.QAction(MainWindow)
+        self.action_Stack_Map.setCheckable(True)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/mainwindowIcon/icons8_stack.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.action_Stack_Map.setIcon(icon1)
@@ -66,6 +67,7 @@ class Ui_MainWindow(object):
         self.action_Lot_Dialog.setIcon(icon2)
         self.action_Lot_Dialog.setObjectName("action_Lot_Dialog")
         self.action_Map_Setting = QtWidgets.QAction(MainWindow)
+        self.action_Map_Setting.setCheckable(True)
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/mainwindowIcon/icons8_automatic.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.action_Map_Setting.setIcon(icon3)
@@ -145,8 +147,6 @@ class Ui_MainWindow(object):
         self.action_Rotation_Right.setText(_translate("MainWindow", "Rotation_Right"))
         self.action_Rotation_Right.setToolTip(_translate("MainWindow", "Rotate Map Right"))
 from Widgets import Viewer
-import source_rc
-
 
 if __name__ == "__main__":
     import sys

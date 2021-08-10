@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import (QGraphicsRectItem, QGraphicsEllipseItem, QGraphicsItem, QGraphicsTextItem,
-                             QGraphicsPolygonItem, QGraphicsPathItem)
-from PyQt5.QtGui import QBrush, QColor, QTransform, QPen, QCursor, QPolygonF, QPainterPath, QLinearGradient, QPainter, QGradient
-from PyQt5.QtCore import QRectF, Qt, pyqtSignal, QObject
-
 import numpy as np
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QBrush, QColor, QLinearGradient, QGradient
+from PyQt5.QtWidgets import (QGraphicsRectItem, QGraphicsEllipseItem, QGraphicsItem)
+
 
 class RectItem(QGraphicsRectItem):
     '''
@@ -14,7 +13,7 @@ class RectItem(QGraphicsRectItem):
     2. item selected and inked
     '''
 
-    def __init__(self, x, y, width, height, color, alpha=1, name='Die_Item', inked_color=QColor('#FFFFFF'),
+    def __init__(self, x, y, x_label, y_label, width, height, color, alpha=1, name='Die_Item', inked_color=QColor('#FFFFFF'),
                  bin_number=None, **kwargs):
         """
         ink_flag to determine if dies can be ink-off
@@ -44,8 +43,8 @@ class RectItem(QGraphicsRectItem):
         self._ink_color = inked_color
 
         # set the x label and y label, relative coordinate. Sort Coordinate in this application
-        # self.x_label = x_label
-        # self.y_label = y_label
+        self.x_label = x_label
+        self.y_label = y_label
 
         # set the position of the left bottom
         # self.setPos(x, y)
@@ -81,12 +80,23 @@ class RectItem(QGraphicsRectItem):
     def markInkChange(self):
         """
         change the die to inked or un-ink
+
+        1 is marked as die did not inked off
+        2 is marked as die inked off
         :return:
         """
         if self.ink_flag == 1:
             self.ink_flag = 2
         elif self.ink_flag == 2:
             self.ink_flag = 1
+
+    def setDieInkColor(self, color):
+        """
+        based on the ink flag value to change the ink off color
+        :return:
+        """
+        if self.ink_flag ==2:
+            self.setBrush(color)
 
 
 class EllipseItem(QGraphicsEllipseItem):

@@ -133,6 +133,9 @@
    </property>
   </action>
   <action name="action_Stack_Map">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="source.qrc">
      <normaloff>:/mainwindowIcon/icons8_stack.ico</normaloff>:/mainwindowIcon/icons8_stack.ico</iconset>
@@ -154,6 +157,9 @@
    </property>
   </action>
   <action name="action_Map_Setting">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="source.qrc">
      <normaloff>:/mainwindowIcon/icons8_automatic.ico</normaloff>:/mainwindowIcon/icons8_automatic.ico</iconset>

@@ -7,13 +7,13 @@
 # WARNING! All changes made in this file will be lost!
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 
 class Ui_App_Setting_Dialog(object):
     def setupUi(self, App_Setting_Dialog):
         App_Setting_Dialog.setObjectName("App_Setting_Dialog")
-        App_Setting_Dialog.resize(306, 657)
+        App_Setting_Dialog.resize(322, 687)
         self.gridLayout_4 = QtWidgets.QGridLayout(App_Setting_Dialog)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.groupBox_wafer_layout_setting = QtWidgets.QGroupBox(App_Setting_Dialog)
@@ -123,10 +123,9 @@ class Ui_App_Setting_Dialog(object):
         self.label_3 = QtWidgets.QLabel(self.groupBox)
         self.label_3.setObjectName("label_3")
         self.verticalLayout.addWidget(self.label_3)
-        self.plainTextEdit_wafer_title_name = QtWidgets.QPlainTextEdit(self.groupBox)
-        self.plainTextEdit_wafer_title_name.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.plainTextEdit_wafer_title_name.setObjectName("plainTextEdit_wafer_title_name")
-        self.verticalLayout.addWidget(self.plainTextEdit_wafer_title_name)
+        self.lineEdit_plot_title_name = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_plot_title_name.setObjectName("lineEdit_plot_title_name")
+        self.verticalLayout.addWidget(self.lineEdit_plot_title_name)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_10.setObjectName("horizontalLayout_10")
@@ -187,9 +186,9 @@ class Ui_App_Setting_Dialog(object):
         self.toolButton_save_folder_path = QtWidgets.QToolButton(self.groupBox_file_saving_setting)
         self.toolButton_save_folder_path.setObjectName("toolButton_save_folder_path")
         self.horizontalLayout_8.addWidget(self.toolButton_save_folder_path)
-        self.lineEdit = QtWidgets.QLineEdit(self.groupBox_file_saving_setting)
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout_8.addWidget(self.lineEdit)
+        self.lineEdit_save_path = QtWidgets.QLineEdit(self.groupBox_file_saving_setting)
+        self.lineEdit_save_path.setObjectName("lineEdit_save_path")
+        self.horizontalLayout_8.addWidget(self.lineEdit_save_path)
         self.gridLayout_2.addLayout(self.horizontalLayout_8, 2, 0, 1, 1)
         self.gridLayout_4.addWidget(self.groupBox_file_saving_setting, 2, 0, 1, 1)
 
@@ -198,7 +197,7 @@ class Ui_App_Setting_Dialog(object):
 
     def retranslateUi(self, App_Setting_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        App_Setting_Dialog.setWindowTitle(_translate("App_Setting_Dialog", "Dialog"))
+        App_Setting_Dialog.setWindowTitle(_translate("App_Setting_Dialog", "Display Setting Dialog"))
         self.groupBox_wafer_layout_setting.setToolTip(_translate("App_Setting_Dialog", "Wafer Layout Setting"))
         self.groupBox_wafer_layout_setting.setTitle(_translate("App_Setting_Dialog", "Wafer Layout Setting"))
         self.label_2.setText(_translate("App_Setting_Dialog", "Default Untest Die Color:"))
